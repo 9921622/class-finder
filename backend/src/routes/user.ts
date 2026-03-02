@@ -4,7 +4,7 @@ const router = Router();
 
 
 
-router.get("/1/class", (req: Request, res: Response) => {
+router.get("/1/classes", (req: Request, res: Response) => {
   // simulate GET route for user's classes
   const classes : Class[] = [
     new Class(
