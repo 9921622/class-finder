@@ -24,7 +24,7 @@ export default function Map() {
 
       if (!mapRef.current) return;
 
-      map = L.map(mapRef.current).setView([51.505, -0.09], 13);
+      map = L.map(mapRef.current).setView([48.4359, -123.3516], 13);
 
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         attribution: "&copy; OpenStreetMap contributors",
