@@ -2,11 +2,19 @@ import env from "./env";
 import cors from "cors";
 
 import express, { Application } from "express";
+
+import GenerateData from "./models/GenerateData";
+
 import healthRoutes from "./routes/health";
 import userRoutes from "./routes/user";
+import mapRoutes from "./routes/map";
 
 const app: Application = express();
 
+// generate dummy data
+GenerateData();
+
+// ROUTES
 app.use(
   cors({
     origin: env.FRONTEND_API,
@@ -14,6 +22,7 @@ app.use(
 );
 app.use("/health", healthRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/map", mapRoutes);
 
 app.listen(env.PORT, () => {
     console.log(`Server running on port ${env.PORT}`);
