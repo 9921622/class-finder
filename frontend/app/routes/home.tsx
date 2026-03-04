@@ -1,8 +1,8 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import type { Route } from "./+types/home";
 
-import type { ClassItem } from "~/components/classtimeline";
+import { usersAPI } from "~/APIWrapper";
+import type { Class } from "~/types/Class";
 import { Timeline } from "~/components/classtimeline";
 
 export function meta({}: Route.MetaArgs) {
@@ -13,19 +13,15 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function Home() {
-  const [classes, setClasses] = useState<ClassItem[]>([]);
+  const [classes, setClasses] = useState<Class[]>([]);
 
   // get class
   useEffect(() => {
-    const fetchClasses = async () => {
-      try {
-        const res = await axios.get<ClassItem[]>(`${import.meta.env.VITE_API_URL}/users/1/classes`);
-        setClasses(res.data);
-      } catch (err: any) {
-        console.error(err);
-      }
+    const fetch = async () => {
+      const res = await usersAPI.getClasses();
+      setClasses(res.data);
     };
-    fetchClasses();
+    fetch();
   }, []);
 
   return (

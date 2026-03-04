@@ -1,17 +1,10 @@
 import React from "react";
+import type { Class } from "~/types/Class";
 
-// 1️⃣ Define the type for a class
-export type ClassItem = {
-  name: string;
-  building: string;
-  location: string;
-  start: string;
-  end: string;
-};
 
 // 2️⃣ Props for the Timeline component
 type TimelineProps = {
-  classes: ClassItem[];
+  classes: Class[];
 };
 
 // 3️⃣ Timeline component

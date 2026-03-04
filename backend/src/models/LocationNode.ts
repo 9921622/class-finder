@@ -52,11 +52,19 @@ export function getLocationNodeByName(name: string): LocationNode[] {
   return locationNodes.filter(n => regex.test(n.name));
 }
 
+export function getLocationNodeByTags(tags: string[]): LocationNode[] {
+  if (!tags || tags.length === 0) return [];
+
+  return locationNodes.filter(node =>
+    node.tags.some(tag => tags.includes(tag))
+  );
+}
+
 export function getAllLocationNodes(): readonly LocationNode[] {
   return locationNodes;
 }
 
-export function mergeLocationNodeArrays(arrays: LocationNode[][]): LocationNode[] {
+export function unionLocationNodeArrays(arrays: LocationNode[][]): LocationNode[] {
   const merged: LocationNode[] = [];
 
   for (const arr of arrays) {
@@ -69,4 +77,19 @@ export function mergeLocationNodeArrays(arrays: LocationNode[][]): LocationNode[
   }
 
   return merged;
+}
+
+export function intersectLocationNodeArrays(arrays: LocationNode[][]): LocationNode[] {
+  if (arrays.length === 0) return [];
+
+  // Start with the first array
+  let intersection = arrays[0];
+
+  // For each subsequent array, keep only nodes whose id exists in all arrays
+  for (let i = 1; i < arrays.length; i++) {
+    const currentIds = new Set(arrays[i].map(n => n.id));
+    intersection = intersection.filter(n => currentIds.has(n.id));
+  }
+
+  return intersection;
 }

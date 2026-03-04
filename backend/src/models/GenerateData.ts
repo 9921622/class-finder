@@ -35,6 +35,27 @@ export function GenerateClasses() {
 
 export function GenerateLocationNodes() {
     createLocationNode(
+        "CSC 110",
+        { latitude: 0, longitude: 0 }, 
+        { tags: ["class"] }
+    );
+    createLocationNode(
+        "Math 200",
+        { latitude: 0, longitude: 0 }, 
+        { tags: ["class"] }
+    );
+    createLocationNode(
+        "SENG 265",
+        { latitude: 0, longitude: 0 }, 
+        { tags: ["class"] }
+    );
+    createLocationNode(
+        "STAT 260",
+        { latitude: 0, longitude: 0 }, 
+        { tags: ["class"] }
+    );
+
+    createLocationNode(
         "Node 1",
         { latitude: 0, longitude: 0 }
         // {
@@ -47,7 +68,8 @@ export function GenerateLocationNodes() {
 
     createLocationNode(
         "Node 2",
-        { latitude: 0, longitude: 0 }
+        { latitude: 0, longitude: 0 },
+        { tags: ["tag1"] }
     );
 
     createLocationNode(
@@ -57,7 +79,8 @@ export function GenerateLocationNodes() {
 
     createLocationNode(
         "Node 4",
-        { latitude: 0, longitude: 0 }
+        { latitude: 0, longitude: 0 },
+        { tags: ["tag2"] }
     );
 
     createLocationNode(

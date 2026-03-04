@@ -7,6 +7,8 @@ import {
   ScrollRestoration,
 } from "react-router";
 
+import Navbar from "./components/navbar";
+
 import type { Route } from "./+types/root";
 import "./app.css";
 
@@ -44,6 +46,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 export default function App() {
   return (
     <div className="min-h-screen max-w-sm mx-auto p-4">  
+      <Navbar />
       <Outlet />
     </div>
   );
