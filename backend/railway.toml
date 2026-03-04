@@ -1,0 +1,12 @@
+# https://docs.railway.com/config-as-code
+
+[build]
+builder = "railpack"
+buildCommand = "npm ci && npm run build"
+
+[deploy]
+preDeployCommand = []
+startCommand = "npm run start"
+healthcheckPath = "/health"
+healthcheckTimeout = 100
+restartPolicyType = "never"

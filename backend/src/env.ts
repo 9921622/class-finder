@@ -16,9 +16,10 @@ const add_env = dotenv.config({
   path: path.resolve(__dirname, `../.env.${NODE_ENV}`),
 });
 
-if (base_env.error) {
+if (NODE_ENV == "development" && base_env.error) {
   throw new Error("ERROR: .env file not found");
 }
+
 if (add_env.error) {
   throw new Error(`ERROR: .env file for {NODE_ENV} not found`);
 }
