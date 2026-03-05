@@ -2,6 +2,7 @@ import { createClass } from "../models/Class";
 import { createLocationNode } from "../models/LocationNode";
 
 
+
 export function GenerateClasses() {
     createClass(
         "CSC 110",
@@ -57,7 +58,8 @@ export function GenerateLocationNodes() {
 
     createLocationNode(
         "Node 1",
-        { latitude: 0, longitude: 0 }
+        { latitude: 0, longitude: 0 },
+        
         // {
         //     prevId: 0,
         //     nextId: 2,
