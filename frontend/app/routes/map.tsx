@@ -47,7 +47,7 @@ export default function MapPage() {
         const isClassNode = node.tags.includes("class") || node.tags.includes("destination");
 
         L.circleMarker(point, {
-          radius: isClassNode ? 8 : 6,
+          radius: isClassNode ? 8 : 4,
           color: isClassNode ? "#B91C1C" : "#1D4ED8",
           fillColor: isClassNode ? "#EF4444" : "#60A5FA",
           fillOpacity: 0.95,

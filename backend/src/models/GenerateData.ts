@@ -47,7 +47,10 @@ export function GenerateLocationNodes() {
     createLocationNode(
         "SENG 265 Start",
         { latitude: 48.46130, longitude: -123.31065 }, 
-        { tags: ["class"] }
+        { 
+            nextId: 5,    
+            tags: ["class"] 
+        }
     );
     createLocationNode(
         "SENG 265 Room",
@@ -67,7 +70,8 @@ export function GenerateLocationNodes() {
         "ELW Node 1",
         { latitude: 48.46120, longitude: -123.31065 },
         {
-            nextId: 5,
+            prevId: 2,
+            nextId: 6,
             tags: ["route", "elw"]
         }
     );
@@ -76,8 +80,8 @@ export function GenerateLocationNodes() {
         "ELW Node 2",
         { latitude: 48.46120, longitude: -123.31060 },
         {
-            prevId: 4,
-            nextId: 6,
+            prevId: 5,
+            nextId: 7,
             tags: ["route", "elw"]
         }
     );
@@ -86,18 +90,18 @@ export function GenerateLocationNodes() {
         "ELW 3 (Stairs)",
         { latitude: 48.46123, longitude: -123.31060 },
         {
-            prevId: 5,
-            nextId: 7,
+            prevId: 6,
+            nextId: 8,
             tags: ["route", "elw", "stairs"]
         }
     );
 
     createLocationNode(
         "ELW Node 4",
-        { latitude: 48.46126, longitude: -123.31060 },
+        { latitude: 48.46126, longitude: -123.31060 }, // note: this is not the actual location of the node, it's just for testing the polyline mechanic
         {
-            prevId: 6,
-            nextId: 8,
+            prevId: 7,
+            nextId: 9,
             tags: ["route", "elw"]
         }
     );
