@@ -27,6 +27,9 @@ export const usersAPI = {
 
 export const mapAPI = {
     APIUrl() {return `${import.meta.env.VITE_API_URL}/map/node`},
+    getAllNodes() {
+        return axios.get<LocationNode[]>(this.APIUrl());
+    },
     query(query : {id? : number, name?: string, tags?: string[]}) {
         if (!query.id && !query.name && (!query.tags || query.tags.length === 0))
             throw new Error("ERROR: query is empty");
