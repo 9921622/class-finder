@@ -98,10 +98,20 @@ export function GenerateLocationNodes() {
 
     createLocationNode(
         "ELW Node 4",
-        { latitude: 48.46126, longitude: -123.31060 }, // note: this is not the actual location of the node, it's just for testing the polyline mechanic
+        { latitude: 48.46126, longitude: -123.31060 },
         {
             prevId: 7,
             nextId: 9,
+            tags: ["route", "elw"]
+        }
+    );
+
+    createLocationNode(
+        "ELW Node 5",
+        { latitude: 48.46126, longitude: -123.31090 },
+        {
+            prevId: 8,
+            nextId: 3,
             tags: ["route", "elw"]
         }
     );
