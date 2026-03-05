@@ -1,5 +1,6 @@
+import { map } from "zod";
 import { createClass } from "../models/Class";
-import { createLocationNode } from "../models/LocationNode";
+import { createLocationNode, getAllLocationNodes } from "../models/LocationNode";
 
 
 export function GenerateClasses() {
@@ -31,6 +32,94 @@ export function GenerateClasses() {
         "15:30",
         "16:50"
     );
+}
+
+function GenerateOutsideNodes() {
+    const misc = [
+        createLocationNode(
+            "STAT 260",
+            { latitude: 48.46380, longitude: -123.31340 }, 
+            { tags: ["class"] }
+        ),
+        createLocationNode(
+        "ELW",
+        { latitude: 48.461176451647376,longitude: -123.31056195166656 }, 
+        { tags: ["R-ELW1F", "REDIRECT"] }
+        ),
+    ]
+
+    const route = [
+        createLocationNode(
+        "",
+        { latitude: 48.46151439331123, longitude: -123.31069187798123 }, 
+        { tags: [] }
+        ),
+        createLocationNode(
+            "ELW - Entrance",
+            { latitude: 48.46130, longitude: -123.31065 }, 
+            { tags: ["R-ELW1F", "REDIRECT", "entrance"] }
+        ),
+    ];
+    for (let i = 0; i < route.length; i++) {
+        const node = route[i];
+        const prevNode = route[i - 1];
+        const nextNode = route[i + 1];
+
+        if (prevNode) node.prevId = prevNode.id;
+        if (nextNode) node.nextId = nextNode.id;
+    }
+
+    //
+    [...misc, ...route]
+        .map((n) => n.tags.push("OUTSIDE"))
+}
+
+function GenerateInteriorNodes() {  
+    // ELW1F map ========================================
+    const ELW1F = [
+        createLocationNode(
+            "Entrance",
+            { latitude: -34, longitude: 86.60291688570543 }, 
+            { tags: ["R-BASE", "REDIRECT"] }
+        ),
+        createLocationNode(
+            "2nd Floor",
+            { latitude: -53.625, longitude: 95.35786885678966 }, 
+            { tags: ["R-ELW2F", "REDIRECT"] }
+        ),
+    ];
+    ELW1F.map((n) => n.tags.push("ELW1F"))
+    for (let i = 0; i < ELW1F.length; i++) {
+        const node = ELW1F[i];
+        const prevNode = ELW1F[i - 1];
+        const nextNode = ELW1F[i + 1];
+
+        if (prevNode) node.prevId = prevNode.id;
+        if (nextNode) node.nextId = nextNode.id;
+    }
+
+    // ELW2F map ============================================
+    const ELW2F = [
+        createLocationNode(  
+            "1rst Floor",
+            { latitude: -140.66666412353516, longitude: 92.92130381087753 }, 
+            { tags: ["R-ELW1F", "REDIRECT"] }
+        ),
+        createLocationNode( 
+            "B215 Lab",
+            { latitude: -124, longitude: 122.70181865972094 }, 
+            { tags: ["class"] }
+        ),
+    ];
+    ELW2F.map((n) => n.tags.push("ELW2F"))
+    for (let i = 0; i < ELW1F.length; i++) {
+        const node = ELW2F[i];
+        const prevNode = ELW2F[i - 1];
+        const nextNode = ELW2F[i + 1];
+
+        if (prevNode) node.prevId = prevNode.id;
+        if (nextNode) node.nextId = nextNode.id;
+    }
 }
 
 export function GenerateLocationNodes() {
@@ -128,6 +217,18 @@ export function GenerateLocationNodes() {
             tags: ["class"]
         }
     );
+
+    // old map nodes
+    const nodes = getAllLocationNodes();
+    const last_id = nodes[nodes.length-1].id;
+    nodes.forEach((n) => n.tags.push("map_v1"));
+
+    // new map nodes
+    GenerateOutsideNodes();
+    GenerateInteriorNodes();
+    nodes.forEach((n) => { if (n.id > last_id) n.tags.push("map_v2"); });
+
+
 }
 
 export default function GenerateData() {

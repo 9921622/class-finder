@@ -2,7 +2,7 @@ import type { Route } from "./+types/map";
 import React, { useEffect, useRef } from "react";
 import { mapAPI } from "~/APIWrapper";
 import type { LocationNode } from "~/types/LocationNode";
-
+import { rotatedOverlayFromCenter } from "~/map/rotateOverlay";
 
 
 
@@ -12,6 +12,67 @@ export function meta({}: Route.MetaArgs) {
     { name: "description", content: "View the map" },
   ];
 }
+
+
+
+
+
+function CreateMap(L: any, mapRef: any) {
+  const baseLayer = L.tileLayer(
+    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    {
+    minZoom: 0,
+    maxZoom: 24,        // clamp tile requests
+    maxNativeZoom: 19,  // stretch tiles beyond this
+    }
+  );
+
+  const map = L.map(mapRef.current, {
+    maxZoom: 24,
+    layers: [baseLayer],
+    }).setView(
+      // [48.463206449716026, -123.3122201865843],
+      [48.46114, -123.31053],
+      15
+  );
+
+  return map;
+}
+
+function CreateOverlay(L: any) {
+  var layerControl = L.control.layers({}, {});
+
+
+  const ELW_1f = rotatedOverlayFromCenter(
+    L,
+    "/elw1rstfloor.png",
+    [48.461, -123.3105], // center of building
+    139, 100,
+    { yawDeg: 12 }, 
+    { scale: 1, opacity: 0.5 }
+  );
+
+  const ELW_2f = rotatedOverlayFromCenter(
+    L,
+    "/elw2ndfloor.png",
+    [48.461, -123.3105], // center of building
+    139, 100,
+    { yawDeg: 12 }, 
+    { scale: 1, opacity: 0.5 }
+  );
+
+
+  layerControl.addOverlay(L.layerGroup([ELW_1f]), "Floor 1");
+  layerControl.addOverlay(L.layerGroup([ELW_2f]), "Floor 2");
+  return layerControl;
+}
+
+
+
+
+
+
+
 
 export default function MapPage() {
   const mapRef = useRef<HTMLDivElement>(null);
@@ -23,17 +84,17 @@ export default function MapPage() {
     (async () => {
       // Dynamically import Leaflet on the client only
       const L = (await import("leaflet")).default;
+      await import("leaflet-imageoverlay-rotated");
       await import("leaflet/dist/leaflet.css");
-
       if (!mapRef.current) return;
 
-      map = L.map(mapRef.current).setView([48.463206449716026, -123.3122201865843], 15);
 
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        attribution: "&copy; OpenStreetMap contributors",
-      }).addTo(map);
 
-      const { data: nodes } = await mapAPI.getAllNodes();
+      map = CreateMap(L, mapRef);
+      CreateOverlay(L).addTo(map);
+      
+
+      const { data: nodes } = await mapAPI.queryNodes({tags:["map_v1"]});
       if (cancelled) return;
 
       const bounds: [number, number][] = [];
@@ -95,6 +156,7 @@ export default function MapPage() {
       <h1>Map Page</h1>
       <div
         ref={mapRef}
+        className="relative z-0"
         style={{ height: "500px", width: "100%" }}
       />
     </div>
