@@ -49,7 +49,7 @@ export function GenerateLocationNodes() {
         { latitude: 48.46130, longitude: -123.31065 }, 
         { 
             nextId: 5,    
-            tags: ["class"] 
+            tags: ["route", "elw"] 
         }
     );
     createLocationNode(
