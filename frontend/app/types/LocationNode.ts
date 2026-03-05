@@ -1,7 +1,7 @@
 
 export type LatLang = {
-    lat: number;
-    lng: number;
+    latitude: number;
+    longitude: number;
 };
 export type LocationNode = {
     id: number;

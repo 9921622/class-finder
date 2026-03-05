@@ -5,8 +5,8 @@ import { createLocationNode } from "../models/LocationNode";
 export function GenerateClasses() {
     createClass(
         "CSC 110",
-        "Engineering Lab Wing",
-        "Room 108",
+        "ECS Building",
+        "Room 123",
         "09:00",
         "10:20"
     );
@@ -19,8 +19,8 @@ export function GenerateClasses() {
     );
     createClass(
         "SENG 265",
-        "ECS Building",
-        "Room 124",
+        "Engineering Lab Wing",
+        "Room B215",
         "13:00",
         "14:20"
     );
@@ -36,56 +36,70 @@ export function GenerateClasses() {
 export function GenerateLocationNodes() {
     createLocationNode(
         "CSC 110",
-        { latitude: 0, longitude: 0 }, 
+        { latitude: 48.46115, longitude: -123.31150 }, 
         { tags: ["class"] }
     );
     createLocationNode(
         "Math 200",
-        { latitude: 0, longitude: 0 }, 
+        { latitude: 48.46250, longitude: -123.31065 }, 
         { tags: ["class"] }
     );
     createLocationNode(
-        "SENG 265",
-        { latitude: 0, longitude: 0 }, 
+        "SENG 265 Start",
+        { latitude: 48.46130, longitude: -123.31065 }, 
         { tags: ["class"] }
+    );
+    createLocationNode(
+        "SENG 265 Room",
+        { latitude: 48.46115, longitude: -123.31085 },
+        {
+            prevId: 7,
+            tags: ["class"]
+        }
     );
     createLocationNode(
         "STAT 260",
-        { latitude: 0, longitude: 0 }, 
+        { latitude: 48.46380, longitude: -123.31340 }, 
         { tags: ["class"] }
     );
 
     createLocationNode(
-        "Node 1",
-        { latitude: 0, longitude: 0 }
-        // {
-        //     prevId: 0,
-        //     nextId: 2,
-        //     tags: ["stairs"],
-        //     image: "src", 
-        // }
+        "ELW Node 1",
+        { latitude: 48.46120, longitude: -123.31065 },
+        {
+            nextId: 5,
+            tags: ["route", "elw"]
+        }
     );
 
     createLocationNode(
-        "Node 2",
-        { latitude: 0, longitude: 0 },
-        { tags: ["tag1"] }
+        "ELW Node 2",
+        { latitude: 48.46120, longitude: -123.31060 },
+        {
+            prevId: 4,
+            nextId: 6,
+            tags: ["route", "elw"]
+        }
     );
 
     createLocationNode(
-        "Node 3",
-        { latitude: 0, longitude: 0 }
+        "ELW 3 (Stairs)",
+        { latitude: 48.46123, longitude: -123.31060 },
+        {
+            prevId: 5,
+            nextId: 7,
+            tags: ["route", "elw", "stairs"]
+        }
     );
 
     createLocationNode(
-        "Node 4",
-        { latitude: 0, longitude: 0 },
-        { tags: ["tag2"] }
-    );
-
-    createLocationNode(
-        "Node 5",
-        { latitude: 0, longitude: 0 }
+        "ELW Node 4",
+        { latitude: 48.46126, longitude: -123.31060 },
+        {
+            prevId: 6,
+            nextId: 8,
+            tags: ["route", "elw"]
+        }
     );
 }
 
