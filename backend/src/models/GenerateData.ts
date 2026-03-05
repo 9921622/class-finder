@@ -44,22 +44,7 @@ export function GenerateLocationNodes() {
         { latitude: 48.46250, longitude: -123.31065 }, 
         { tags: ["class"] }
     );
-    createLocationNode(
-        "SENG 265 Start",
-        { latitude: 48.46130, longitude: -123.31065 }, 
-        { 
-            nextId: 5,    
-            tags: ["route", "elw"] 
-        }
-    );
-    createLocationNode(
-        "SENG 265 Room",
-        { latitude: 48.46115, longitude: -123.31085 },
-        {
-            prevId: 7,
-            tags: ["class"]
-        }
-    );
+    
     createLocationNode(
         "STAT 260",
         { latitude: 48.46380, longitude: -123.31340 }, 
@@ -67,10 +52,29 @@ export function GenerateLocationNodes() {
     );
 
     createLocationNode(
+        "SENG 265 Start",
+        { latitude: 48.46140, longitude: -123.31065 }, 
+        { 
+            nextId: 4,    
+            tags: ["route", "elw"] 
+        }
+    );
+
+    createLocationNode(
+        "Node 0",
+        { latitude: 48.46130, longitude: -123.31065 }, 
+        { 
+            prevId: 3,
+            nextId: 5,    
+            tags: ["route", "elw"] 
+        }
+    );
+
+    createLocationNode(
         "ELW Node 1",
         { latitude: 48.46120, longitude: -123.31065 },
         {
-            prevId: 2,
+            prevId: 4,
             nextId: 6,
             tags: ["route", "elw"]
         }
@@ -111,8 +115,17 @@ export function GenerateLocationNodes() {
         { latitude: 48.46126, longitude: -123.31090 },
         {
             prevId: 8,
-            nextId: 3,
+            nextId: 10,
             tags: ["route", "elw"]
+        }
+    );
+
+    createLocationNode(
+        "SENG 265 Room",
+        { latitude: 48.46115, longitude: -123.31085 },
+        {
+            prevId: 9,
+            tags: ["class"]
         }
     );
 }
