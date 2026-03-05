@@ -10,7 +10,7 @@ export default function Searchbar() {
     useEffect(() => {
         // call api
         const fetch = async () => {
-          const res = await mapAPI.query({name: search, tags: ["class"]});
+          const res = await mapAPI.queryNodes({name: search, tags: ["class"]});
           setQueryNames(res.data);
         };
 

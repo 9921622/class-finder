@@ -56,7 +56,7 @@ export function getLocationNodeByTags(tags: string[]): LocationNode[] {
   if (!tags || tags.length === 0) return [];
 
   return locationNodes.filter(node =>
-    node.tags.some(tag => tags.includes(tag))
+    tags.every(tag => node.tags.includes(tag))
   );
 }
 
