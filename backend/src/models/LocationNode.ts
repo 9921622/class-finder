@@ -12,7 +12,7 @@ export class LocationNode {
     public nextId: number | null,
 
     public name: string,
-    public image: TexImageSource | null,
+    public image: string | null,
     public tags: string[],
     public position: LatLang
   ) {}
@@ -24,7 +24,7 @@ export function createLocationNode(
   options?: {
     prevId?: number | null;
     nextId?: number | null;
-    image?: TexImageSource | null;
+    image?: string | null;
     tags?: string[];
   }
 ): LocationNode {
