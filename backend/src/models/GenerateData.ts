@@ -2,6 +2,16 @@ import { createClass } from "../models/Class";
 import { createLocationNode } from "../models/LocationNode";
 
 
+const baseUrl = process.env.BACKEND_URL || 'http://localhost:8080';
+const ELW_front = `${baseUrl}/static/images/ELW_front.jpg`;
+const ELW_entrance =  `${baseUrl}/static/images/ELW_entrance.jpg`;
+const ELW_stairs =  `${baseUrl}/static/images/ELW_stairs.jpg`;
+const ELW_stairsStart =  `${baseUrl}/static/images/ELW_stairsStart.jpg`;
+const ELW_stairsEnd =  `${baseUrl}/static/images/ELW_stairsEnd.jpg`;
+const ELW_hall1 =  `${baseUrl}/static/images/ELW_hall1.jpg`;
+const ELW_hall2=  `${baseUrl}/static/images/ELW_hall2.jpg`;
+const ELW_B215 =  `${baseUrl}/static/images/ELW_B215.jpg`;
+
 
 export function GenerateClasses() {
     createClass(
@@ -57,7 +67,8 @@ export function GenerateLocationNodes() {
         { latitude: 48.46140, longitude: -123.31065 }, 
         { 
             nextId: 4,    
-            tags: ["route", "elw"] 
+            tags: ["route", "elw"],
+            image: ELW_front,
         }
     );
 
@@ -67,7 +78,8 @@ export function GenerateLocationNodes() {
         { 
             prevId: 3,
             nextId: 5,    
-            tags: ["route", "elw"] 
+            tags: ["route", "elw"],
+            image: ELW_entrance,
         }
     );
 
@@ -77,7 +89,8 @@ export function GenerateLocationNodes() {
         {
             prevId: 2,
             nextId: 6,
-            tags: ["route", "elw"]
+            tags: ["route", "elw"],
+            image: ELW_stairs,
         }
     );
 
@@ -87,7 +100,8 @@ export function GenerateLocationNodes() {
         {
             prevId: 5,
             nextId: 7,
-            tags: ["route", "elw"]
+            tags: ["route", "elw"],
+            image: ELW_stairsStart,
         }
     );
 
@@ -97,7 +111,8 @@ export function GenerateLocationNodes() {
         {
             prevId: 6,
             nextId: 8,
-            tags: ["route", "elw", "stairs"]
+            tags: ["route", "elw", "stairs"],
+            image: ELW_stairsEnd,
         }
     );
 
@@ -107,7 +122,9 @@ export function GenerateLocationNodes() {
         {
             prevId: 7,
             nextId: 9,
-            tags: ["route", "elw"]
+            tags: ["route", "elw"],
+            image: ELW_hall1,
+
         }
     );
 
@@ -117,7 +134,8 @@ export function GenerateLocationNodes() {
         {
             prevId: 8,
             nextId: 10,
-            tags: ["route", "elw"]
+            tags: ["route", "elw"],
+            image: ELW_hall2,
         }
     );
 
@@ -126,7 +144,8 @@ export function GenerateLocationNodes() {
         { latitude: 48.46115, longitude: -123.31085 },
         {
             prevId: 9,
-            tags: ["class"]
+            tags: ["class","route","elw"],
+            image: ELW_B215,
         }
     );
 }

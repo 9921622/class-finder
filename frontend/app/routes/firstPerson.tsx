@@ -34,7 +34,7 @@ export default function View() {
             try {
                 const fetched = await mapAPI.getAllNodes();
                 const routeOnly = filterRouteNodes(fetched.data);
-                
+
                 // OPTIONAL: ensure deterministic order (e.g., by id)
                 const ordered = routeOnly;
                 setNodes(ordered);
@@ -103,12 +103,22 @@ export default function View() {
                 </button>
             </div>
 
-            {/* ------------------- Optional: show extra info ------------------- */}
-            <section className="bg-gray-50 p-4 rounded">
+
+            <section className="bg-black-50 p-4 rounded">
                 <h3 className="font-semibold mb-2">Details</h3>
-                <pre className="whitespace-pre-wrap">
-                    {JSON.stringify(currentNode, null, 2)}
-                </pre>
+                {currentNode.image ? (
+                    <img
+                        src={currentNode.image}
+                        alt={currentNode.name}
+                        className="max-w-full h-auto mb-5 rounded shadow-md"
+                        onError={(e) => {
+                            console.error('Image failed to load:', currentNode.image);
+                            // e.currentTarget.style.display = 'none'; // comment out for now
+                        }}
+                    />
+                ) : (
+                    <p className="text-gray-500 italic">No image available</p>
+                )}
             </section>
         </div>
     );

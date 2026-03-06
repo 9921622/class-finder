@@ -9,7 +9,7 @@ export type LocationNode = {
     nextId: number | null;
 
     name: string;
-    image: TexImageSource | null;
+    image: string | null;
     tags: string[];
     position: LatLang;
 };
