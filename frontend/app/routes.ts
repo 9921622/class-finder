@@ -4,5 +4,7 @@ export default [
     index("routes/home.tsx"),
     route("map", "routes/map.tsx"),
     route("mmap", "routes/multimap.tsx"),
-    route("firstPerson", "routes/firstPerson.tsx")
+    //route("firstPerson", "routes/firstPerson.tsx"),
+    route("firstPerson/:nodeIndex", "routes/firstPerson.tsx"),
+
 ] satisfies RouteConfig;

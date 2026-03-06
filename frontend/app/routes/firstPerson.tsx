@@ -1,33 +1,35 @@
-
 import React, { useEffect, useMemo, useState } from "react";
 import type { Route } from "./+types/home";
+import { useParams, useNavigate } from "react-router";
 
 import { mapAPI } from "~/APIWrapper";
 
 import type { LocationNode } from "~/types/LocationNode";
 
-export function meta({ }: Route.MetaArgs) {
+export function meta({}: Route.MetaArgs) {
     return [
         { title: "New React Router App" },
         { name: "description", content: "Welcome to React Router!" },
     ];
 }
 
-
 function filterRouteNodes(nodes: LocationNode[]): LocationNode[] {
     return nodes.filter(node => (node.tags ?? []).includes("route"));
 }
 
-
 export default function View() {
+    const navigate = useNavigate();
+    const params = useParams();
+    
+    // Get nodeIndex from URL params
+    const nodeIndexFromUrl = params.nodeIndex ? parseInt(params.nodeIndex, 10) : 0;
+    
     const [nodes, setNodes] = useState<LocationNode[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
-    // Index of the node currently displayed (starts at 0 once data loads)
-    const [currentIdx, setCurrentIdx] = useState<number>(0);
-
-
+    // Index of the node currently displayed - initialize from URL parameter
+    const [currentIdx, setCurrentIdx] = useState<number>(nodeIndexFromUrl);
 
     useEffect(() => {
         async function loadNodes() {
@@ -38,7 +40,15 @@ export default function View() {
                 // OPTIONAL: ensure deterministic order (e.g., by id)
                 const ordered = routeOnly;
                 setNodes(ordered);
-                setCurrentIdx(0); // reset to first node after load
+                
+                // Validate that the URL index is within bounds after loading
+                if (nodeIndexFromUrl >= ordered.length) {
+                    // If URL index is out of bounds, redirect to first item
+                    navigate("/firstPerson/0", { replace: true });
+                    setCurrentIdx(0);
+                } else {
+                    setCurrentIdx(nodeIndexFromUrl);
+                }
             } catch (e: unknown) {
                 setError(e instanceof Error ? e.message : String(e));
             } finally {
@@ -47,9 +57,7 @@ export default function View() {
         }
 
         loadNodes();
-    }, []);
-
-
+    }, [nodeIndexFromUrl, navigate]); // Re-run when URL param changes
 
     const { currentNode, prevNode, nextNode } = useMemo(() => {
         const cur = nodes[currentIdx] ?? null;
@@ -58,9 +66,23 @@ export default function View() {
         return { currentNode: cur, prevNode: prev, nextNode: next };
     }, [nodes, currentIdx]);
 
+    // Update URL when currentIdx changes
+    const goPrev = () => {
+        const newIdx = Math.max(currentIdx - 1, 0);
+        setCurrentIdx(newIdx);
+        navigate(`/firstPerson/${newIdx}`);
+    };
+    
+    const goNext = () => {
+        const newIdx = Math.min(currentIdx + 1, nodes.length - 1);
+        setCurrentIdx(newIdx);
+        navigate(`/firstPerson/${newIdx}`);
+    };
 
-    const goPrev = () => setCurrentIdx((i) => Math.max(i - 1, 0));
-    const goNext = () => setCurrentIdx((i) => Math.min(i + 1, nodes.length - 1));
+    // Handle direct URL changes (like typing in browser)
+    useEffect(() => {
+        setCurrentIdx(nodeIndexFromUrl);
+    }, [nodeIndexFromUrl]);
 
     if (loading) {
         return <div className="p-4">Loading nodes…</div>;
@@ -74,9 +96,14 @@ export default function View() {
         );
     }
 
-    // Guard against an empty list (shouldn’t happen, but be safe)
-    if (!currentNode) {
+    // Guard against an empty list
+    if (nodes.length === 0) {
         return <div className="p-4">No nodes available.</div>;
+    }
+
+    // Guard against invalid index
+    if (!currentNode) {
+        return <div className="p-4">Invalid node index.</div>;
     }
 
     return (
@@ -89,7 +116,7 @@ export default function View() {
                 <button
                     className="join-item btn btn-outline"
                     onClick={goPrev}
-                    disabled={!prevNode}               // disables when there is no previous
+                    disabled={!prevNode}
                 >
                     ← {prevNode?.name ?? "Previous"}
                 </button>
@@ -97,12 +124,11 @@ export default function View() {
                 <button
                     className="join-item btn btn-outline"
                     onClick={goNext}
-                    disabled={!nextNode}               // disables when there is no next
+                    disabled={!nextNode}
                 >
                     {nextNode?.name ?? "Next"} →
                 </button>
             </div>
-
 
             <section className="bg-black-50 p-4 rounded">
                 <h3 className="font-semibold mb-2">Details</h3>
@@ -113,13 +139,18 @@ export default function View() {
                         className="max-w-full h-auto mb-5 rounded shadow-md"
                         onError={(e) => {
                             console.error('Image failed to load:', currentNode.image);
-                            // e.currentTarget.style.display = 'none'; // comment out for now
+                            // e.currentTarget.style.display = 'none';
                         }}
                     />
                 ) : (
                     <p className="text-gray-500 italic">No image available</p>
                 )}
             </section>
+            
+            {/* Position indicator */}
+            <div className="text-sm text-gray-500 mt-4 text-center">
+                {currentIdx + 1} / {nodes.length}
+            </div>
         </div>
     );
 }
