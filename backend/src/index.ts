@@ -11,6 +11,8 @@ import mapRoutes from "./routes/map";
 
 const app: Application = express();
 
+// generate dummy data
+GenerateData();
 
 // ROUTES
 app.use(
@@ -22,10 +24,7 @@ app.use("/health", healthRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/map", mapRoutes);
 app.use("/static", express.static("public"));
+
 app.listen(env.PORT, () => {
     console.log(`Server running on port ${env.PORT}`);
 });
-
-
-// generate dummy data
-GenerateData();
