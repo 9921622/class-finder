@@ -26,11 +26,12 @@ export const usersAPI = {
 };
 
 export const mapAPI = {
-    APIUrl() {return `${import.meta.env.VITE_API_URL}/map/node`},
+    APIUrl() {return `${import.meta.env.VITE_API_URL}/map`},
+
     getAllNodes() {
-        return axios.get<LocationNode[]>(this.APIUrl());
+        return axios.get<LocationNode[]>(`${this.APIUrl()}/node`);
     },
-    query(query : {id? : number, name?: string, tags?: string[]}) {
+    queryNodes(query : {id? : number, name?: string, tags?: string[]}) {
         if (!query.id && !query.name && (!query.tags || query.tags.length === 0))
             throw new Error("ERROR: query is empty");
 
@@ -39,7 +40,11 @@ export const mapAPI = {
         if (query.tags) queryCopy.tags = query.tags.join(",");
         
         const q = stringify(queryCopy);
-        const res = axios.get<LocationNode[]>(`${this.APIUrl()}?${q}`);
+        const res = axios.get<LocationNode[]>(`${this.APIUrl()}/node?${q}`);
         return res;
     },
+
+    getTileURL(building : string) {
+        return `${this.APIUrl()}/tile/${building}/{z}/{x}/{y}.png`;
+    }
 }
