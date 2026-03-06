@@ -6,8 +6,5 @@ import tsconfigPaths from "vite-tsconfig-paths";
 export default defineConfig({
   plugins: [tailwindcss(), reactRouter(), tsconfigPaths()],
     server: {
-    proxy: {
-      '/static': 'http://localhost:3000'
-    }
   }
 });
