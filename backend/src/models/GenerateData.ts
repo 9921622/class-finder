@@ -16,9 +16,9 @@ const ELW_B215 =  `${baseUrl}/static/images/ELW_B215.jpg`;
 
 export function GenerateClasses() {
     createClass(
-        "CSC 110",
-        "ECS Building",
-        "Room 123",
+        "ELW215 Lab",
+        "ELW Building",
+        "Room B215",
         "09:00",
         "10:20"
     );
@@ -95,9 +95,8 @@ function GenerateInteriorNodes() {
         ),
 
         createLocationNode(
-            "stairs",
+            "Stairs",
             { latitude: -51.75, longitude: 86.3 }, 
-            { tags: ["R-ELW2F", "REDIRECT"] }
         ),
         createLocationNode(
             "2nd Floor",
@@ -126,17 +125,15 @@ function GenerateInteriorNodes() {
         createLocationNode( 
             "Hall 1",
             { latitude: -50, longitude: 93.032 }, 
-            { tags: ["R-ELW1F", "REDIRECT"] }
         ),
         createLocationNode( 
             "Hall 2",
             { latitude: -50.2045, longitude: 56.298 }, 
-            { tags: ["R-ELW1F", "REDIRECT"] }
         ),
         createLocationNode( 
-            "B215 Lab",
+            "ELW B215 Lab",
             { latitude: -87.75, longitude: 56.5 }, 
-            { tags: ["ELW2","class"] }
+            { tags: ["ELW2", "class"] }
         ),
     ];
     ELW2F.map((n) => n.tags.push("ELW2F"))

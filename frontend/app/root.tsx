@@ -8,6 +8,7 @@ import {
 } from "react-router";
 
 import Navbar from "./components/Navbar";
+import Dock from "./components/Dock";
 
 import type { Route } from "./+types/root";
 import "./app.css";
@@ -48,6 +49,7 @@ export default function App() {
     <div className="min-h-screen max-w-sm mx-auto p-4">  
       <Navbar />
       <Outlet />
+      <Dock />
     </div>
   );
 }

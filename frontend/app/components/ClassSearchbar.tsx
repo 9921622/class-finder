@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router";
 import { mapAPI } from "~/APIWrapper";
 import type { LocationNode } from "~/types/LocationNode";
 
@@ -10,7 +11,7 @@ export default function Searchbar() {
     useEffect(() => {
         // call api
         const fetch = async () => {
-          const res = await mapAPI.queryNodes({name: search, tags: ["class"]});
+          const res = await mapAPI.queryNodes({name: search, tags: ["map_v2", "class"]});
           setQueryNames(res.data);
         };
 
@@ -41,10 +42,8 @@ export default function Searchbar() {
             tabIndex={0}
             className="dropdown-content menu bg-base-100 rounded-box z-[1] w-full p-2 shadow"
         >
-            {queryNames.map((q) => (
-
-                <li key={q.id}><a>{q.name}</a></li>
-
+            {queryNames.map((n) => (
+            <li key={n.id}><Link to={mapAPI.getMapLink(n)}>{n.name}</Link></li>
             ))}
         </ul>
         </div>

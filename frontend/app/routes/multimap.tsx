@@ -1,5 +1,6 @@
 import type { Route } from "./+types/map";
 import React, { useEffect, useRef, useState } from "react";
+import { useParams, useSearchParams } from "react-router";
 import { mapAPI } from "~/APIWrapper";
 import type { LocationNode } from "~/types/LocationNode";
 import { renderNodes } from "~/map/nodeRender";
@@ -14,6 +15,7 @@ export function meta({}: Route.MetaArgs) {
 
 
 
+// maps
 
 function BaseMap(L: any, mapRef: any) {
   const baseLayer = L.tileLayer(
@@ -32,7 +34,6 @@ function BaseMap(L: any, mapRef: any) {
 
   return map;
 }
-
 function CreateCustomMap(L: any, mapRef: any, tileSize : number, gridSize : number, url : string) {
 
   const map = L.map(mapRef.current, {
@@ -62,8 +63,6 @@ function CreateCustomMap(L: any, mapRef: any, tileSize : number, gridSize : numb
 
   return map;
 }
-
-
 function ELW1F_Map(L: any, mapRef: any) {
   return CreateCustomMap(L, mapRef, 32, 6, mapAPI.getTileURL("elw1f"));
 }
@@ -72,55 +71,76 @@ function ELW2F_Map(L: any, mapRef: any) {
 }
 
 
+// 
+async function nodesFromState(mapState : string) {
+  let nodes: LocationNode[] = [];
+  switch (mapState) {
+    case "BASE": ({ data: nodes } = await mapAPI.queryNodes({ tags: ["map_v2", "OUTSIDE"] })); break;
+    case "ELW1F": ({ data: nodes } = await mapAPI.queryNodes({ tags: ["map_v2", "ELW1F"] })); break;
+    case "ELW2F": ({ data: nodes } = await mapAPI.queryNodes({ tags: ["map_v2", "ELW2F"] })); break;
+  }
+  return nodes;
+}
+function mapFromState(L: any, mapRef: any, mapState : any) {
+  let map;
+  switch (mapState) {
+    case "BASE": map = BaseMap(L, mapRef); break;
+    case "ELW1F": map = ELW1F_Map(L, mapRef); break;
+    case "ELW2F": map = ELW2F_Map(L, mapRef); break;
+  }
+  return map;
+}
+
+
 
 export default function MapPage() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  
+  //
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<any>(null);
+  
+  //
+  type MapState = "BASE" | "ELW1F" | "ELW2F";
+  const [mapState, setMapState] = useState<MapState>("BASE");
+  const [pos, setPos] = useState<[number, number] | null>(null);
 
-  const [mapState, setMapState] = useState<"BASE" | "ELW1F" | "ELW2F">("BASE");
 
+
+
+
+  // set map based on search params
+  useEffect(() => {
+    const paramsMapState = searchParams.get("map");
+    if (paramsMapState && ["BASE","ELW1F","ELW2F"].includes(paramsMapState))
+      setMapState(paramsMapState as MapState);
+
+    const lat = Number(searchParams.get("latitude"));
+    const lng = Number(searchParams.get("longitude"));
+    if (!isNaN(lat) && !isNaN(lng))
+      setPos([lat, lng]);
+    else setPos(null);
+  }, [searchParams]);
+
+
+  // map creation
   useEffect(() => {
     let cancelled = false;
 
     (async () => {
+      //
       const L = (await import("leaflet")).default;
       await import("leaflet/dist/leaflet.css");
       if (!mapRef.current) return;
 
-      // ------------------
-      // Fetch nodes for current mapState
-      // ------------------
-      let nodes: LocationNode[] = [];
-      switch (mapState) {
-        case "BASE":
-          ({ data: nodes } = await mapAPI.queryNodes({ tags: ["map_v2", "OUTSIDE"] }));
-          break;
-        case "ELW1F":
-          ({ data: nodes } = await mapAPI.queryNodes({ tags: ["map_v2", "ELW1F"] }));
-          break;
-        case "ELW2F":
-          ({ data: nodes } = await mapAPI.queryNodes({ tags: ["map_v2", "ELW2F"] }));
-          break;
-      }
-
+      // 
+      let nodes: LocationNode[] = await nodesFromState(mapState);
       if (cancelled) return;
-
-      // ------------------
-      // Create new map based on mapState
-      // ------------------
-      let map;
-      switch (mapState) {
-        case "BASE":
-          map = BaseMap(L, mapRef);
-          break;
-        case "ELW1F":
-          map = ELW1F_Map(L, mapRef);
-          break;
-        case "ELW2F":
-          map = ELW2F_Map(L, mapRef);
-          break;
-      }
+      let map = mapFromState(L, mapRef, mapState);
       mapInstanceRef.current = map;
+
+      if (pos && (pos[0] !== 0 || pos[1] !== 0)) 
+        map.flyTo(pos, 18);
 
       // ------------------
       // Right-click listener
@@ -135,21 +155,22 @@ export default function MapPage() {
       // Render nodes with "Go to map" button
       // ------------------
       renderNodes(L, map, nodes, async (node, layer) => {
-        const base = `<strong>${node.name}</strong><br/>Tags: ${node.tags.join(", ")}<br/>`;
+        const base = `<strong>${node.name}</strong>`;
         const portal = `<button class="btn btn-success" id="goto-${node.id}">Go to map</button>`
-
+        
         if (node.tags.includes("REDIRECT")) 
-          layer.bindPopup(base+portal).openPopup();
+          layer.bindPopup(base+"<br>"+portal).openPopup();
         else layer.bindPopup(base).openPopup();
 
         // Attach click listener to button
         setTimeout(() => {
           const btn = document.getElementById(`goto-${node.id}`);
           btn?.addEventListener("click", () => {
+            
             // Determine mapState from node tags
-            if (node.tags.includes("R-ELW1F")) setMapState("ELW1F");
-            else if (node.tags.includes("R-ELW2F")) setMapState("ELW2F");
-            else if (node.tags.includes("R-BASE")) setMapState("BASE");
+            if (node.tags.includes("R-ELW1F")) setSearchParams({map: "ELW1F"});
+            else if (node.tags.includes("R-ELW2F")) setSearchParams({map: "ELW2F"});
+            else if (node.tags.includes("R-BASE"))setSearchParams({map: "BASE"});
           });
         }, 0);
         
@@ -160,7 +181,7 @@ export default function MapPage() {
       cancelled = true;
       mapInstanceRef.current?.remove();
     };
-  }, [mapState]);
+  }, [mapState, pos]);
 
   return (
     <div className="container mx-auto p-4">

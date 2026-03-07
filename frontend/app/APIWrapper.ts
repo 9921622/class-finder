@@ -28,6 +28,7 @@ export const usersAPI = {
 export const mapAPI = {
     APIUrl() {return `${import.meta.env.VITE_API_URL}/map`},
 
+    // backend
     getAllNodes() {
         return axios.get<LocationNode[]>(`${this.APIUrl()}/node`);
     },
@@ -46,5 +47,12 @@ export const mapAPI = {
 
     getTileURL(building : string) {
         return `${this.APIUrl()}/tile/${building}/{z}/{x}/{y}.png`;
-    }
+    },
+
+    // frontend 
+    getMapLink(node : LocationNode) {
+        const map = ["ELW1F", "ELW2F"].find(tag => node.tags.includes(tag)) ?? "BASE";
+        const q = stringify({...{map: map}, ...node.position});
+        return `/mmap?`+q;
+    },
 }
