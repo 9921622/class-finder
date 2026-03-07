@@ -93,9 +93,15 @@ function GenerateInteriorNodes() {
             { latitude: -34, longitude: 86.60291688570543 }, 
             { tags: ["R-BASE", "REDIRECT"] }
         ),
+
+        createLocationNode(
+            "stairs",
+            { latitude: -51.75, longitude: 86.3 }, 
+            { tags: ["R-ELW2F", "REDIRECT"] }
+        ),
         createLocationNode(
             "2nd Floor",
-            { latitude: -53.625, longitude: 95.35786885678966 }, 
+            { latitude: -51.75, longitude: 95.8674 }, 
             { tags: ["R-ELW2F", "REDIRECT"] }
         ),
     ];
@@ -113,13 +119,24 @@ function GenerateInteriorNodes() {
     const ELW2F = [
         createLocationNode(  
             "1rst Floor",
-            { latitude: -140.66666412353516, longitude: 92.92130381087753 }, 
+            { latitude: -57, longitude: 97.829699 }, 
+            { tags: ["R-ELW1F", "REDIRECT"] }
+        ),
+
+        createLocationNode( 
+            "Hall 1",
+            { latitude: -50, longitude: 93.032 }, 
+            { tags: ["R-ELW1F", "REDIRECT"] }
+        ),
+        createLocationNode( 
+            "Hall 2",
+            { latitude: -50.2045, longitude: 56.298 }, 
             { tags: ["R-ELW1F", "REDIRECT"] }
         ),
         createLocationNode( 
             "B215 Lab",
-            { latitude: -124, longitude: 122.70181865972094 }, 
-            { tags: ["class"] }
+            { latitude: -87.75, longitude: 56.5 }, 
+            { tags: ["ELW2","class"] }
         ),
     ];
     ELW2F.map((n) => n.tags.push("ELW2F"))
