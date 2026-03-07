@@ -133,8 +133,8 @@ export default function MapPage() {
             [next.position.latitude, next.position.longitude],
           ],
           {
-            color: "#059669",
-            weight: 4,
+            color: "#480202",
+            weight: 5,
             opacity: 0.9,
           }
         ).addTo(map);
