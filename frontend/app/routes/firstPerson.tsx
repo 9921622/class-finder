@@ -34,11 +34,13 @@ export default function View() {
     useEffect(() => {
         async function loadNodes() {
             try {
-                const fetched = await mapAPI.getAllNodes();
-                const routeOnly = filterRouteNodes(fetched.data);
+                // const { data: fetched } = await mapAPI.queryNodes({tags: ["route"]});
+                const { data: fetched } = await mapAPI.getAllNodes();
+                const routeOnly = filterRouteNodes(fetched);
 
                 // OPTIONAL: ensure deterministic order (e.g., by id)
-                const ordered = routeOnly;
+                // const ordered = routeOnly;
+                const ordered = fetched;
                 setNodes(ordered);
                 
                 // Validate that the URL index is within bounds after loading
@@ -60,23 +62,31 @@ export default function View() {
     }, [nodeIndexFromUrl, navigate]); // Re-run when URL param changes
 
     const { currentNode, prevNode, nextNode } = useMemo(() => {
-        const cur = nodes[currentIdx] ?? null;
-        const prev = currentIdx > 0 ? nodes[currentIdx - 1] : null;
-        const next = currentIdx < nodes.length - 1 ? nodes[currentIdx + 1] : null;
+        const nodeMap = new Map<number, LocationNode>();
+        nodes.forEach((n) => nodeMap.set(n.id, n));
+
+        const cur = nodeMap.get(nodes[currentIdx]?.id) ?? null;
+        const prev = cur?.prevId != null ? nodeMap.get(cur.prevId) ?? null : null;
+        const next = cur?.nextId != null ? nodeMap.get(cur.nextId) ?? null : null;
+
         return { currentNode: cur, prevNode: prev, nextNode: next };
     }, [nodes, currentIdx]);
 
     // Update URL when currentIdx changes
     const goPrev = () => {
-        const newIdx = Math.max(currentIdx - 1, 0);
-        setCurrentIdx(newIdx);
-        navigate(`/firstPerson/${newIdx}`);
+        if (prevNode) {
+            const newIdx = nodes.findIndex(n => n.id === prevNode.id);
+            setCurrentIdx(newIdx);
+            navigate(`/firstPerson/${prevNode.id}`);
+        }
     };
-    
+
     const goNext = () => {
-        const newIdx = Math.min(currentIdx + 1, nodes.length - 1);
-        setCurrentIdx(newIdx);
-        navigate(`/firstPerson/${newIdx}`);
+        if (nextNode) {
+            const newIdx = nodes.findIndex(n => n.id === nextNode.id);
+            setCurrentIdx(newIdx);
+            navigate(`/firstPerson/${nextNode.id}`);
+        }
     };
 
     // Handle direct URL changes (like typing in browser)
