@@ -4,14 +4,14 @@ import { createLocationNode, getAllLocationNodes, getLocationNodeById } from "..
 
 
 const baseUrl = process.env.BACKEND_URL || 'http://localhost:8080';
-const ELW_front = `${baseUrl}/static/images/ELW_front.jpg`;
-const ELW_entrance =  `${baseUrl}/static/images/ELW_entrance.jpg`;
-const ELW_stairs =  `${baseUrl}/static/images/ELW_stairs.jpg`;
-const ELW_stairsStart =  `${baseUrl}/static/images/ELW_stairsStart.jpg`;
-const ELW_stairsEnd =  `${baseUrl}/static/images/ELW_stairsEnd.jpg`;
-const ELW_hall1 =  `${baseUrl}/static/images/ELW_hall1.jpg`;
-const ELW_hall2=  `${baseUrl}/static/images/ELW_hall2.jpg`;
-const ELW_B215 =  `${baseUrl}/static/images/ELW_B215.jpg`;
+const ELW_front = `${baseUrl}/static/images/ELW_front.JPG`;
+const ELW_entrance =  `${baseUrl}/static/images/ELW_entrance.JPG`;
+const ELW_stairs =  `${baseUrl}/static/images/ELW_stairs.JPG`;
+const ELW_stairsStart =  `${baseUrl}/static/images/ELW_stairsStart.JPG`;
+const ELW_stairsEnd =  `${baseUrl}/static/images/ELW_stairsEnd.JPG`;
+const ELW_hall1 =  `${baseUrl}/static/images/ELW_hall1.JPG`;
+const ELW_hall2=  `${baseUrl}/static/images/ELW_hall2.JPG`;
+const ELW_B215 =  `${baseUrl}/static/images/ELW_B215.JPG`;
 
 
 export function GenerateClasses() {
