@@ -118,7 +118,7 @@ function GenerateInteriorNodes() {
     // ELW2F map ============================================
     const ELW2F = [
         createLocationNode(  
-            "1rst Floor",
+            "1st Floor",
             { latitude: -57, longitude: 97.829699 }, 
             { tags: ["R-ELW1F", "REDIRECT"], image: ELW_stairsEnd, }
         ),
