@@ -2,39 +2,49 @@ import React from "react";
 import type { Class } from "~/types/Class";
 
 
-// 2️⃣ Props for the Timeline component
+
+
+type ClassCardProp = {
+  cls: Class; // renamed prop
+}
+
+function ClassCard({ cls } : ClassCardProp) {
+  return (
+    <>
+    <h3 className="font-bold">{cls.name}</h3>
+    <p className="text-sm text-gray-600">{cls.building}</p>
+    <p className="text-sm text-gray-600">{cls.location}</p>
+    <p className="text-xs text-gray-500">
+      {cls.start} - {cls.end}
+    </p>
+    </>
+  );
+}
+
 type TimelineProps = {
   classes: Class[];
 };
-
-// 3️⃣ Timeline component
 export function Timeline({ classes }: TimelineProps) {
   return (
-    <ul className="timeline timeline-vertical w-full max-w-md mx-auto">
+    <ul className="timeline timeline-vertical w-full max-w-md mx-auto flex">
       {classes.map((cls, idx) => (
         <li key={`${cls.name}-${cls.start}`}>
-          {/* optional hr line between items */}
           {idx !== 0 && <hr />}
 
-          {/* left side: start time */}
-          <div className="timeline-start font-semibold">{cls.start}</div>
-
-          {/* middle circle icon */}
-          <div className="timeline-middle">
+          <div className="flex-1 timeline-start flex flex-col text-right mr-3">
+            <div className="text-lg font-bold">{cls.start}</div>
+            <div className="text-sm text-gray-400">{cls.end}</div>
+          </div>
+          
+          <div className="flex-1 timeline-middle">
             <div className="bg-primary h-5 w-5 rounded-full"></div>
           </div>
 
-          {/* right side: class card */}
-          <div className="timeline-end timeline-box p-3 bg-base-200 rounded-md shadow-md">
-            <h3 className="font-bold">{cls.name}</h3>
-            <p className="text-sm text-gray-600">{cls.building}</p>
-            <p className="text-sm text-gray-600">{cls.location}</p>
-            <p className="text-xs text-gray-500">
-              {cls.start} - {cls.end}
-            </p>
+          <div className="flex-2 timeline-end timeline-box p-3 bg-base-200 rounded-md shadow-md w-36">
+          <ClassCard cls={cls} />
           </div>
 
-          {/* optional hr line after item */}
+
           {idx !== classes.length - 1 && <hr />}
         </li>
       ))}

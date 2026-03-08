@@ -46,11 +46,13 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 export default function App() {
   return (
+    <>
+    <Navbar />
     <div className="min-h-screen max-w-sm mx-auto p-4">  
-      <Navbar />
       <Outlet />
-      <Dock />
     </div>
+    <Dock />
+    </>
   );
 }
 
