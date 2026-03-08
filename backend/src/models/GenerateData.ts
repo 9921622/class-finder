@@ -32,7 +32,7 @@ export function GenerateClasses() {
     createClass(
         "SENG 265",
         "Engineering Lab Wing",
-        "Room B215",
+        "Room B216",
         "13:00",
         "14:20"
     );
@@ -55,7 +55,7 @@ function GenerateOutsideNodes() {
         createLocationNode(
         "ELW",
         { latitude: 48.461176451647376,longitude: -123.31056195166656 }, 
-        { tags: ["R-ELW1F", "REDIRECT"] }
+        { tags: ["R-ELW1F", "REDIRECT", "building"] }
         ),
     ]
 

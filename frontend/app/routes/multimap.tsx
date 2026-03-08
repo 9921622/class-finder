@@ -108,27 +108,37 @@ function PopupButton({ node, setSearchParams, navigate}: PopupButtonProps) {
   }; 
 
   return (
-    <>
-    <strong>{node.name}</strong>
-    {node.image !== null && (
-      <>
-      <button onClick={goToMap} className="p-0 border-0 bg-transparent">
-        <img
-          src={node.image}
-          alt={node.name}
-          className="rounded cursor-pointer max-w-full max-h-32 object-contain"
-        />
-      </button>
+    <div className="flex flex-col items-center gap-2">
+      <strong>{node.name}</strong>
 
-      <button className="btn btn-secondary" onClick={() => {navigate(`/firstPerson/${node.id}`)}}>View</button>
-      </>
-    )}
+      {node.image !== null && (
+        <button className="p-0 border-0 bg-transparent flex justify-center">
+          <img
+            src={node.image}
+            alt={node.name}
+            className="rounded cursor-pointer max-w-full max-h-32 object-contain"
+          />
+        </button>
+      )}
 
-    { node.tags.includes("REDIRECT") &&
-        (<button className="btn btn-success" onClick={goToMap}>Enter</button>)
-    }
-    </>
-  ); 
+      <div className="join">
+        {node.image !== null && (
+          <button
+            className="btn btn-secondary"
+            onClick={() => navigate(`/firstPerson/${node.id}`)}
+          >
+            View
+          </button>
+        )}
+
+        {node.tags.includes("REDIRECT") && (
+          <button className="btn btn-success" onClick={goToMap}>
+            Enter
+          </button>
+        )}
+      </div>
+    </div>
+  );
 }
 
 type BreadcrumbProps = {

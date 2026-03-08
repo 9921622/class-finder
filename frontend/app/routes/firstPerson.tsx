@@ -8,8 +8,8 @@ import type { LocationNode } from "~/types/LocationNode";
 
 export function meta({}: Route.MetaArgs) {
     return [
-        { title: "New React Router App" },
-        { name: "description", content: "Welcome to React Router!" },
+        { title: "Path View" },
+        { name: "description", content: "Check route path" },
     ];
 }
 

@@ -6,7 +6,7 @@ export default function Navbar() {
     
     return (
     <>
-        <div className="navbar w-full bg-base-100 shadow-sm">
+        <div className="navbar w-full bg-base-100 shadow-sm sticky top-0 z-50">
 
         <div className="flex-1">
             <div className="w-20">
@@ -14,7 +14,6 @@ export default function Navbar() {
                     alt="UVIC"
                     src="/uvic_logo.png" />
             </div>
-            {/* <a className="btn btn-ghost text-xl">UVIC</a> */}
         </div>
 
         <div className="flex gap-2">
