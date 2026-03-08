@@ -1,9 +1,11 @@
 import type { Route } from "./+types/map";
 import React, { useEffect, useRef, useState } from "react";
-import { useParams, useSearchParams } from "react-router";
+import { useNavigate, useParams, useSearchParams } from "react-router";
 import { mapAPI } from "~/APIWrapper";
 import type { LocationNode } from "~/types/LocationNode";
 import { renderNodes } from "~/map/nodeRender";
+import { createRoot } from "react-dom/client";
+import type { NavigateFunction, SetURLSearchParams } from "react-router";
 
 
 export function meta({}: Route.MetaArgs) {
@@ -46,10 +48,11 @@ function CreateCustomMap(L: any, mapRef: any, tileSize : number, gridSize : numb
     });
 
   // 
-  const bounds = [
-    [0, 0],
-    [-tileSize*gridSize, tileSize*gridSize],
-  ] as L.LatLngExpression[];
+  const halfSize = tileSize * gridSize * 1.5;
+  const bounds: L.LatLngExpression[] = [
+    [-halfSize, -halfSize],
+    [halfSize, halfSize],
+  ];
   map.setMaxBounds(bounds);
 
   // Add custom tile layer
@@ -91,11 +94,88 @@ function mapFromState(L: any, mapRef: any, mapState : any) {
   return map;
 }
 
+//
+type PopupButtonProps = {
+  node: LocationNode;
+  setSearchParams: SetURLSearchParams;
+  navigate : NavigateFunction;
+};
+function PopupButton({ node, setSearchParams, navigate}: PopupButtonProps) { 
+  const goToMap = () => { 
+    if (node.tags.includes("R-ELW1F")) setSearchParams({ map: "ELW1F" }); 
+    else if (node.tags.includes("R-ELW2F")) setSearchParams({ map: "ELW2F" }); 
+    else if (node.tags.includes("R-BASE")) setSearchParams({ map: "BASE" }); 
+  }; 
+
+  return (
+    <>
+    <strong>{node.name}</strong>
+    {node.image !== null && (
+      <>
+      <button onClick={goToMap} className="p-0 border-0 bg-transparent">
+        <img
+          src={node.image}
+          alt={node.name}
+          className="rounded cursor-pointer max-w-full max-h-32 object-contain"
+        />
+      </button>
+
+      <button className="btn btn-secondary" onClick={() => {navigate(`/firstPerson/${node.id}`)}}>View</button>
+      </>
+    )}
+
+    { node.tags.includes("REDIRECT") &&
+        (<button className="btn btn-success" onClick={goToMap}>Enter</button>)
+    }
+    </>
+  ); 
+}
+
+type BreadcrumbProps = {
+  map: string;
+  setSearchParams: SetURLSearchParams;
+};
+function Breadcrumb({ map, setSearchParams }: BreadcrumbProps) {
+  const mapHierarchy = ["BASE", "ELW1F", "ELW2F"];
+  const crumbs = mapHierarchy.slice(0, mapHierarchy.indexOf(map) + 1);
+
+  const handleClick = (crumb: string) => {
+    setSearchParams({ map: crumb });
+  };
+
+  return (
+    <div className="breadcrumbs text-sm mb-2">
+      <ul className="flex gap-1">
+        <li>
+          <a className="text-gray-500 hover:underline" onClick={() => handleClick("BASE")}>
+            Maps
+          </a>
+        </li>
+        {crumbs.map((crumb, idx) => (
+          <li key={crumb}>
+            {idx === crumbs.length - 1 ? (
+              <span className="font-semibold">{crumb}</span>
+            ) : (
+              <a
+                className="text-blue-600 hover:underline"
+                onClick={() => handleClick(crumb)}
+              >
+                {crumb}
+              </a>
+            )}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 
 
 export default function MapPage() {
   const [searchParams, setSearchParams] = useSearchParams();
-  
+  const navigate = useNavigate();
+
   //
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<any>(null);
@@ -133,6 +213,14 @@ export default function MapPage() {
       await import("leaflet/dist/leaflet.css");
       if (!mapRef.current) return;
 
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.remove();
+        mapInstanceRef.current = null;
+      }
+      if (mapRef.current && (mapRef.current as any)._leaflet_id) {
+        delete (mapRef.current as any)._leaflet_id;
+      }
+
       // 
       let nodes: LocationNode[] = await nodesFromState(mapState);
       if (cancelled) return;
@@ -140,7 +228,7 @@ export default function MapPage() {
       mapInstanceRef.current = map;
 
       if (pos && (pos[0] !== 0 || pos[1] !== 0)) 
-        map.flyTo(pos, 18);
+        map.flyTo(pos, 19);
 
       // ------------------
       // Right-click listener
@@ -155,36 +243,41 @@ export default function MapPage() {
       // Render nodes with "Go to map" button
       // ------------------
       renderNodes(L, map, nodes, async (node, layer) => {
-        const base = `<strong>${node.name}</strong>`;
-        const portal = `<button class="btn btn-success" id="goto-${node.id}">Go to map</button>`
-        
-        if (node.tags.includes("REDIRECT")) 
-          layer.bindPopup(base+"<br>"+portal).openPopup();
-        else layer.bindPopup(base).openPopup();
+        const popupContainer = document.createElement("div");
+        popupContainer.className = "w-max whitespace-nowrap flex flex-col gap-2";
+        const popup = layer.bindPopup(popupContainer, {  maxWidth: "auto" as any });
+        const root = createRoot(popupContainer);
 
-        // Attach click listener to button
-        setTimeout(() => {
-          const btn = document.getElementById(`goto-${node.id}`);
-          btn?.addEventListener("click", () => {
-            
-            // Determine mapState from node tags
-            if (node.tags.includes("R-ELW1F")) setSearchParams({map: "ELW1F"});
-            else if (node.tags.includes("R-ELW2F")) setSearchParams({map: "ELW2F"});
-            else if (node.tags.includes("R-BASE"))setSearchParams({map: "BASE"});
-          });
-        }, 0);
-        
+        layer.on("popupopen", () => {
+          root.render(<PopupButton node={node} setSearchParams={setSearchParams} navigate={navigate}/>);
+          setTimeout(() => {
+            layer.getPopup()?.update();
+          }, 5);
+        });
+        popup.openPopup();
       });
+
+
     })();
 
     return () => {
       cancelled = true;
-      mapInstanceRef.current?.remove();
+      // mapInstanceRef.current?.remove();
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.remove();
+        mapInstanceRef.current = null;
+      }
+
+      if (mapRef.current && (mapRef.current as any)._leaflet_id) {
+        delete (mapRef.current as any)._leaflet_id;
+      }
     };
-  }, [mapState, pos]);
+  }, [mapState, searchParams]);
 
   return (
     <div className="container mx-auto p-4">
+      <Breadcrumb map={String(mapState)} setSearchParams={setSearchParams}/>
+
       <div
         ref={mapRef}
         className="relative z-0"

@@ -1,6 +1,6 @@
 import { map } from "zod";
 import { createClass } from "../models/Class";
-import { createLocationNode, getAllLocationNodes } from "../models/LocationNode";
+import { createLocationNode, getAllLocationNodes, getLocationNodeById } from "../models/LocationNode";
 
 
 const baseUrl = process.env.BACKEND_URL || 'http://localhost:8080';
@@ -68,7 +68,7 @@ function GenerateOutsideNodes() {
         createLocationNode(
             "ELW - Entrance",
             { latitude: 48.46130, longitude: -123.31065 }, 
-            { tags: ["R-ELW1F", "REDIRECT", "entrance"] }
+            { tags: ["R-ELW1F", "REDIRECT", "entrance", "route"], image: ELW_front }
         ),
     ];
     for (let i = 0; i < route.length; i++) {
@@ -91,20 +91,21 @@ function GenerateInteriorNodes() {
         createLocationNode(
             "Entrance",
             { latitude: -34, longitude: 86.60291688570543 }, 
-            { tags: ["R-BASE", "REDIRECT"] }
+            { tags: ["R-BASE", "REDIRECT"], image: ELW_entrance }
         ),
 
         createLocationNode(
             "Stairs",
             { latitude: -51.75, longitude: 86.3 }, 
+            { image: ELW_stairs, }
         ),
         createLocationNode(
             "2nd Floor",
             { latitude: -51.75, longitude: 95.8674 }, 
-            { tags: ["R-ELW2F", "REDIRECT"] }
+            { tags: ["R-ELW2F", "REDIRECT"], image: ELW_stairsStart, }
         ),
     ];
-    ELW1F.map((n) => n.tags.push("ELW1F"))
+    ELW1F.map((n) => n.tags.push("ELW1F", "route"))
     for (let i = 0; i < ELW1F.length; i++) {
         const node = ELW1F[i];
         const prevNode = ELW1F[i - 1];
@@ -119,25 +120,27 @@ function GenerateInteriorNodes() {
         createLocationNode(  
             "1rst Floor",
             { latitude: -57, longitude: 97.829699 }, 
-            { tags: ["R-ELW1F", "REDIRECT"] }
+            { tags: ["R-ELW1F", "REDIRECT"], image: ELW_stairsEnd, }
         ),
 
         createLocationNode( 
             "Hall 1",
             { latitude: -50, longitude: 93.032 }, 
+            { image: ELW_hall1, }
         ),
         createLocationNode( 
             "Hall 2",
             { latitude: -50.2045, longitude: 56.298 }, 
+            { image: ELW_hall2, }
         ),
         createLocationNode( 
             "ELW B215 Lab",
             { latitude: -87.75, longitude: 56.5 }, 
-            { tags: ["ELW2", "class"] }
+            { tags: ["ELW2", "class"], image: ELW_B215, }
         ),
     ];
-    ELW2F.map((n) => n.tags.push("ELW2F"))
-    for (let i = 0; i < ELW1F.length; i++) {
+    ELW2F.map((n) => n.tags.push("ELW2F", "route"))
+    for (let i = 0; i < ELW2F.length; i++) {
         const node = ELW2F[i];
         const prevNode = ELW2F[i - 1];
         const nextNode = ELW2F[i + 1];
@@ -145,6 +148,17 @@ function GenerateInteriorNodes() {
         if (prevNode) node.prevId = prevNode.id;
         if (nextNode) node.nextId = nextNode.id;
     }
+
+    const outside = getLocationNodeById(ELW1F[0].id-1)[0];
+    const elw1f_start = ELW1F[0];
+    const elw1f_end = ELW1F[ELW1F.length-1];
+    const elw2f = ELW2F[0];
+    // connect outside to ELW1F
+    outside.nextId = elw1f_start.id;
+    elw1f_start.prevId = outside.id;
+    // connect ELW1F to ELW2F
+    elw1f_end.nextId = elw2f.id;
+    elw2f.prevId = elw1f_end.id;
 }
 
 export function GenerateLocationNodes() {
@@ -190,7 +204,7 @@ export function GenerateLocationNodes() {
         "ELW Node 1",
         { latitude: 48.46120, longitude: -123.31065 },
         {
-            prevId: 2,
+            prevId: 4,
             nextId: 6,
             tags: ["route", "elw"],
             image: ELW_stairs,
