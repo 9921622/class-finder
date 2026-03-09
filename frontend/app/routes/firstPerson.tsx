@@ -89,6 +89,13 @@ export default function View() {
         }
     };
 
+    const goExit = () => {
+        navigate(
+            "/mmap?map=ELW1F"
+        );
+      };
+ 
+
     // Handle direct URL changes (like typing in browser)
     useEffect(() => {
         setCurrentIdx(nodeIndexFromUrl);
@@ -136,8 +143,14 @@ export default function View() {
                     onClick={goNext}
                     disabled={!nextNode}
                 >
-                    {nextNode?.name ?? "Next"} →
+                    {nextNode?.name ?? "Next"} →               
                 </button>
+               <button
+               className="btn btn-outline btn-error w-full"
+               onClick={goExit}
+               >
+               Exit
+               </button>
             </div>
 
             <section className="bg-black-50 p-4 rounded">
