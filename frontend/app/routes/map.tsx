@@ -3,7 +3,7 @@ import React, { useEffect, useRef } from "react";
 import { mapAPI } from "~/APIWrapper";
 import type { LocationNode } from "~/types/LocationNode";
 import { rotatedOverlayFromCenter } from "~/map/rotateOverlay";
-
+import { useSearchParams } from "react-router";
 
 
 export function meta({}: Route.MetaArgs) {
@@ -76,6 +76,8 @@ function CreateOverlay(L: any) {
 
 export default function MapPage() {
   const mapRef = useRef<HTMLDivElement>(null);
+  const [searchParams] = useSearchParams();
+  const floor = searchParams.get("floor");
 
   useEffect(() => {
     let map: any;
@@ -93,6 +95,16 @@ export default function MapPage() {
       map = CreateMap(L, mapRef);
       CreateOverlay(L).addTo(map);
       
+      const overlays = CreateOverlay(L);
+      overlays.layerControl.addTo(map);
+     
+      // Show correct floor based on URL, doesn't work but is here.
+      if (floor === "2") {
+        overlays.ELW_2f.addTo(map);
+      } else if (floor === "1") {
+        overlays.ELW_1f.addTo(map);
+      }   
+ 
 
       const { data: nodes } = await mapAPI.queryNodes({tags:["map_v1"]});
       if (cancelled) return;
