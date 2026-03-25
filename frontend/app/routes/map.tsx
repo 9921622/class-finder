@@ -117,7 +117,7 @@ export default function MapPage() {
           node.position.longitude,
         ];
 
-        const isClassNode = node.tags.includes("class") || node.tags.includes("destination");
+        const isClassNode = node.tags.includes("SEARCH_BAR") || node.tags.includes("destination");
 
         L.circleMarker(point, {
           radius: isClassNode ? 8 : 4,

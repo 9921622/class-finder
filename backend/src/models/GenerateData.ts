@@ -50,12 +50,17 @@ function GenerateOutsideNodes() {
         createLocationNode(
             "STAT 260",
             { latitude: 48.46380, longitude: -123.31340 }, 
-            { tags: ["class"] }
+            { tags: ["SEARCH_BAR"] }
         ),
         createLocationNode(
-        "ELW",
-        { latitude: 48.461176451647376,longitude: -123.31056195166656 }, 
-        { tags: ["R-ELW1F", "REDIRECT", "building"] }
+            "ELW",
+            { latitude: 48.461176451647376,longitude: -123.31056195166656 }, 
+            { tags: ["R-ELW1F", "REDIRECT", "building"] }
+        ),
+        createLocationNode( 
+            "ELW B215 Lab",
+            { latitude: 48.46130, longitude: -123.31065 },
+            { tags: ["HIDDEN", "SEARCH_BAR"] }
         ),
     ]
 
@@ -68,7 +73,7 @@ function GenerateOutsideNodes() {
         createLocationNode(
             "ELW - Entrance",
             { latitude: 48.46130, longitude: -123.31065 }, 
-            { tags: ["R-ELW1F", "REDIRECT", "entrance", "route"], image: ELW_front }
+            { tags: ["R-ELW1F", "REDIRECT", "entrance", "ROUTE"], image: ELW_front }
         ),
     ];
     for (let i = 0; i < route.length; i++) {
@@ -105,7 +110,7 @@ function GenerateInteriorNodes() {
             { tags: ["R-ELW2F", "REDIRECT"], image: ELW_stairsStart, }
         ),
     ];
-    ELW1F.map((n) => n.tags.push("ELW1F", "route"))
+    ELW1F.map((n) => n.tags.push("ELW1F", "ROUTE"))
     for (let i = 0; i < ELW1F.length; i++) {
         const node = ELW1F[i];
         const prevNode = ELW1F[i - 1];
@@ -136,10 +141,10 @@ function GenerateInteriorNodes() {
         createLocationNode( 
             "ELW B215 Lab",
             { latitude: -87.75, longitude: 56.5 }, 
-            { tags: ["ELW2", "class"], image: ELW_B215, }
+            { tags: ["ELW2", "END_ROUTE"], image: ELW_B215, }
         ),
     ];
-    ELW2F.map((n) => n.tags.push("ELW2F", "route"))
+    ELW2F.map((n) => n.tags.push("ELW2F", "ROUTE"))
     for (let i = 0; i < ELW2F.length; i++) {
         const node = ELW2F[i];
         const prevNode = ELW2F[i - 1];
@@ -165,18 +170,18 @@ export function GenerateLocationNodes() {
     createLocationNode(
         "CSC 110",
         { latitude: 48.46115, longitude: -123.31150 }, 
-        { tags: ["class"] }
+        { tags: ["SEARCH_BAR"] }
     );
     createLocationNode(
         "Math 200",
         { latitude: 48.46250, longitude: -123.31065 }, 
-        { tags: ["class"] }
+        { tags: ["SEARCH_BAR"] }
     );
     
     createLocationNode(
         "STAT 260",
         { latitude: 48.46380, longitude: -123.31340 }, 
-        { tags: ["class"] }
+        { tags: ["SEARCH_BAR"] }
     );
 
     createLocationNode(
@@ -184,7 +189,7 @@ export function GenerateLocationNodes() {
         { latitude: 48.46140, longitude: -123.31065 }, 
         { 
             nextId: 4,    
-            tags: ["route", "elw"],
+            tags: ["ROUTE", "elw"],
             image: ELW_front,
         }
     );
@@ -195,7 +200,7 @@ export function GenerateLocationNodes() {
         { 
             prevId: 3,
             nextId: 5,    
-            tags: ["route", "elw"],
+            tags: ["ROUTE", "elw"],
             image: ELW_entrance,
         }
     );
@@ -206,7 +211,7 @@ export function GenerateLocationNodes() {
         {
             prevId: 4,
             nextId: 6,
-            tags: ["route", "elw"],
+            tags: ["ROUTE", "elw"],
             image: ELW_stairs,
         }
     );
@@ -217,7 +222,7 @@ export function GenerateLocationNodes() {
         {
             prevId: 5,
             nextId: 7,
-            tags: ["route", "elw"],
+            tags: ["ROUTE", "elw"],
             image: ELW_stairsStart,
         }
     );
@@ -228,7 +233,7 @@ export function GenerateLocationNodes() {
         {
             prevId: 6,
             nextId: 8,
-            tags: ["route", "elw", "stairs"],
+            tags: ["ROUTE", "elw", "stairs"],
             image: ELW_stairsEnd,
         }
     );
@@ -239,7 +244,7 @@ export function GenerateLocationNodes() {
         {
             prevId: 7,
             nextId: 9,
-            tags: ["route", "elw"],
+            tags: ["ROUTE", "elw"],
             image: ELW_hall1,
 
         }
@@ -251,7 +256,7 @@ export function GenerateLocationNodes() {
         {
             prevId: 8,
             nextId: 10,
-            tags: ["route", "elw"],
+            tags: ["ROUTE", "elw"],
             image: ELW_hall2,
         }
     );
@@ -261,7 +266,7 @@ export function GenerateLocationNodes() {
         { latitude: 48.46115, longitude: -123.31085 },
         {
             prevId: 9,
-            tags: ["class","route","elw"],
+            tags: ["SEARCH_BAR","ROUTE","elw"],
             image: ELW_B215,
         }
     );

@@ -53,7 +53,7 @@ function GetMarker(L: any, nodeLayer: any, node: LocationNode): L.Marker | L.Cir
     }).addTo(nodeLayer);
   }
 
-  if (node.tags.includes("class")) {
+  if (node.tags.includes("END_ROUTE")) {
     // return L.marker(point, {
     //   pane: "nodes",
     //   icon: classIcon(L),
@@ -177,6 +177,8 @@ export function renderNodes(
 
   /* ---------- NODES ---------- */
   nodes.forEach((node) => {
+    if (node.tags.includes("HIDDEN")) return;
+
     const point: [number, number] = [
       node.position.latitude,
       node.position.longitude,
