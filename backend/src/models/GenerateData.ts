@@ -48,9 +48,19 @@ export function GenerateClasses() {
 function GenerateOutsideNodes() {
     const misc = [
         createLocationNode(
+            "Math 200",
+            { latitude: 48.46380, longitude: -123.31340 }, 
+            { tags: ["HIDDEN", "SEARCH_BAR", "NO_REDIRECT"] }
+        ),
+        createLocationNode(
             "STAT 260",
             { latitude: 48.46380, longitude: -123.31340 }, 
-            { tags: ["SEARCH_BAR"] }
+            { tags: ["HIDDEN", "SEARCH_BAR", "NO_REDIRECT"] }
+        ),
+        createLocationNode(
+            "SENG 265",
+            { latitude: 48.46380, longitude: -123.31340 }, 
+            { tags: ["HIDDEN", "SEARCH_BAR", "NO_REDIRECT"] }
         ),
         createLocationNode(
             "ELW",

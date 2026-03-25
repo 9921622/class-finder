@@ -52,7 +52,11 @@ export const mapAPI = {
     // frontend 
     getMapLink(node : LocationNode) {
         const map = ["ELW1F", "ELW2F"].find(tag => node.tags.includes(tag)) ?? "BASE";
-        const q = stringify({...{map: map}, ...node.position});
+        const query = 
+            node.tags.includes("NO_REDIRECT")
+            ? { map }
+            : { map, ...node.position }; 
+        const q = stringify(query);
         return `/mmap?`+q;
     },
 }
