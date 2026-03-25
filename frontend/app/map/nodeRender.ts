@@ -17,6 +17,21 @@ const classIcon = (L: any) =>
     popupAnchor: [0, -26],
 });
 
+
+
+function CircleMarker(L : any, point: [number, number], params: L.CircleMarkerOptions) {
+  // wrapper for circle marker that adds a custom property for zoom scaling
+  const marker = L.circleMarker(point, {
+    pane: "nodes",
+    ...params
+  });
+
+  if (params && params.radius)
+    (marker as any)._baseRadius = params.radius;
+
+  return marker;
+}
+
 function GetMarker(L: any, nodeLayer: any, node: LocationNode): L.Marker | L.CircleMarker {
   const point: [number, number] = [
     node.position.latitude,
@@ -28,7 +43,7 @@ function GetMarker(L: any, nodeLayer: any, node: LocationNode): L.Marker | L.Cir
     //   pane: "nodes",
     //   icon: entranceIcon(L),
     // }).addTo(nodeLayer);
-    return L.circleMarker(point, {
+    return CircleMarker(L, point, {
       pane: "nodes",
       radius: 6,
       color: "#abca38",
@@ -43,7 +58,7 @@ function GetMarker(L: any, nodeLayer: any, node: LocationNode): L.Marker | L.Cir
     //   pane: "nodes",
     //   icon: classIcon(L),
     // }).addTo(nodeLayer);
-    return L.circleMarker(point, {
+    return CircleMarker(L, point, {
       pane: "nodes",
       radius: 8,
       color: "#B91C1C",
@@ -58,7 +73,7 @@ function GetMarker(L: any, nodeLayer: any, node: LocationNode): L.Marker | L.Cir
     //   pane: "nodes",
     //   icon: entranceIcon(L),
     // }).addTo(nodeLayer);
-    return L.circleMarker(point, {
+    return CircleMarker(L, point, {
       pane: "nodes",
       radius: 6,
       color: "#60b97e",
@@ -71,7 +86,7 @@ function GetMarker(L: any, nodeLayer: any, node: LocationNode): L.Marker | L.Cir
   
 
 
-  return L.circleMarker(point, {
+  return CircleMarker(L, point, {
     pane: "nodes",
     radius: 4,
     color: "#1D4ED8",
@@ -82,13 +97,26 @@ function GetMarker(L: any, nodeLayer: any, node: LocationNode): L.Marker | L.Cir
 }
 
 
+export function applyZoomScaling(map: any) {
+  if (!map.minZoomScaling) return;
+  const NodeBaseZoom = (map as any).minZoomScaling;
 
+  map.on("zoom", () => {
+    const zoom = map.getZoom();
 
-export type NodeClickHandler = (
-  node: LocationNode,
-  layer: L.Marker | L.CircleMarker,
-  map: L.Map
-) => void;
+    map.eachLayer((node: any) => {
+      if (!node.setRadius) return; 
+      
+      let scale = Math.pow(2, zoom - NodeBaseZoom);
+      let newRadius = node._baseRadius;
+      if (zoom > NodeBaseZoom)
+        newRadius = node._baseRadius * scale;
+
+      node.setRadius(newRadius);
+    });
+  });
+}
+
 
 
 export function ensureNodePanes(map: L.Map) {
@@ -104,7 +132,11 @@ export function ensureNodePanes(map: L.Map) {
 }
 
 
-
+export type NodeClickHandler = (
+  node: LocationNode,
+  layer: L.Marker | L.CircleMarker,
+  map: L.Map
+) => void;
 export function renderNodes(
   L: any,
   map: L.Map,
@@ -151,14 +183,6 @@ export function renderNodes(
     ];
 
     const marker = GetMarker(L, nodeLayer, node);
-    // const marker = L.circleMarker(point, {
-    //   pane: "nodes",
-    //   radius: isClassNode ? 8 : 4,
-    //   color: isClassNode ? "#B91C1C" : "#1D4ED8",
-    //   fillColor: isClassNode ? "#EF4444" : "#60A5FA",
-    //   fillOpacity: 0.95,
-    //   weight: 2,
-    // }).addTo(nodeLayer);
 
     if (onNodeClick) {
       marker.on("click", () => onNodeClick(node, marker, map));
