@@ -247,7 +247,7 @@ export default function MapPage() {
       let map = mapFromState(L, mapRef, mapState);
       mapInstanceRef.current = map;
 
-      if (pos && (pos[0] !== 0 || pos[1] !== 0)) 
+      if (pos && pos[0] !== 0 && pos[1] !== 0)
         map.flyTo(pos, map.minZoomScaling + 1);
 
       applyZoomScaling(map);
@@ -294,7 +294,7 @@ export default function MapPage() {
         delete (mapRef.current as any)._leaflet_id;
       }
     };
-  }, [mapState, searchParams]);
+  }, [mapState, pos]);
 
   return (
     <div className="container mx-auto p-4">
