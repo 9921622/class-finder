@@ -14,7 +14,7 @@ export function meta({}: Route.MetaArgs) {
 }
 
 function filterRouteNodes(nodes: LocationNode[]): LocationNode[] {
-    return nodes.filter(node => (node.tags ?? []).includes("route"));
+    return nodes.filter(node => (node.tags ?? []).includes("ROUTE"));
 }
 
 export default function View() {
@@ -34,7 +34,7 @@ export default function View() {
     useEffect(() => {
         async function loadNodes() {
             try {
-                // const { data: fetched } = await mapAPI.queryNodes({tags: ["route"]});
+                // const { data: fetched } = await mapAPI.queryNodes({tags: ["ROUTE"]});
                 const { data: fetched } = await mapAPI.getAllNodes();
                 const routeOnly = filterRouteNodes(fetched);
 
