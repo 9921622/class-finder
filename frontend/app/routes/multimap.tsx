@@ -1,11 +1,12 @@
 import type { Route } from "./+types/map";
 import React, { useEffect, useRef, useState } from "react";
-import { useNavigate, useParams, useSearchParams } from "react-router";
-import { mapAPI } from "~/APIWrapper";
-import type { LocationNode } from "~/types/LocationNode";
-import { renderNodes } from "~/map/nodeRender";
 import { createRoot } from "react-dom/client";
+import { useNavigate, useParams, useSearchParams } from "react-router";
 import type { NavigateFunction, SetURLSearchParams } from "react-router";
+
+import { mapAPI } from "~/APIWrapper";
+import { renderNodes, applyZoomScaling } from "~/map/nodeRender";
+import type { LocationNode } from "~/types/LocationNode";
 
 
 export function meta({}: Route.MetaArgs) {
@@ -33,6 +34,10 @@ function BaseMap(L: any, mapRef: any) {
     maxZoom: 24,
     layers: [baseLayer],
   }).setView([48.46114, -123.31053], 15);
+
+  // custom property to indicate max zoom for nodes
+  // ie 3 == zoom at 3 the nodes size is scaled by 1.
+  (map as any).minZoomScaling = 17; 
 
   return map;
 }
@@ -63,6 +68,11 @@ function CreateCustomMap(L: any, mapRef: any, tileSize : number, gridSize : numb
     tileSize: tileSize,
     noWrap: true,
   }).addTo(map);
+
+
+  // custom property to indicate max zoom for nodes
+  // ie 3 == zoom at 3 the nodes size is scaled by 1.
+  (map as any).minZoomScaling = 1; 
 
   return map;
 }
@@ -238,7 +248,9 @@ export default function MapPage() {
       mapInstanceRef.current = map;
 
       if (pos && (pos[0] !== 0 || pos[1] !== 0)) 
-        map.flyTo(pos, 19);
+        map.flyTo(pos, map.minZoomScaling + 1);
+
+      applyZoomScaling(map);
 
       // ------------------
       // Right-click listener
