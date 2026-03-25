@@ -101,7 +101,7 @@ export function applyZoomScaling(map: any) {
   if (!map.minZoomScaling) return;
   const NodeBaseZoom = (map as any).minZoomScaling;
 
-  map.on("zoom", () => {
+  map.on("zoomend", () => {
     const zoom = map.getZoom();
 
     map.eachLayer((node: any) => {
